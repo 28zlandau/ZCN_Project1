@@ -90,6 +90,23 @@ class TestCropFunctions(unittest.TestCase):
         self.assertIn("Soil_Type", row)
         self.assertIn("Yield_tons_per_hectare", row)
 
+    def test_avg_rain_is_dict(self):
+        out = calc_average_rainfall_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_rain_nonempty(self):
+        out = calc_average_rainfall_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_rain_key_is_triplet(self):
+        out = calc_average_rainfall_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_rain_value_is_float(self):
+        out = calc_average_rainfall_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
+
+
 
         
 
@@ -98,7 +115,6 @@ class TestCropFunctions(unittest.TestCase):
     def test_main_is_dict(self):
         result = main()
         self.assertIsInstance(result, dict)
-
     def test_main_has_all_keys(self):
         result = main()
         self.assertIn("average_yield", result)
@@ -107,7 +123,6 @@ class TestCropFunctions(unittest.TestCase):
         self.assertIn("weather", result)
         self.assertIn("average_rain", result)
         self.assertIn("average_days_to_harvest", result)
-
     def test_main_values_are_dicts(self):
         result = main()
         self.assertIsInstance(result["average_yield"], dict)
@@ -116,7 +131,6 @@ class TestCropFunctions(unittest.TestCase):
         self.assertIsInstance(result["weather"], dict)
         self.assertIsInstance(result["average_rain"], dict)
         self.assertIsInstance(result["average_days_to_harvest"], dict)
-
     def test_main_sections_nonempty(self):
         result = main()
         self.assertGreaterEqual(len(result["average_yield"]), 1)
