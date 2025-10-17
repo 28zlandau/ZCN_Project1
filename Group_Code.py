@@ -10,6 +10,29 @@ def read_csv(filename):
             data.append(row)
     return data
 
+def calc_average_yield_per_crop(data):
+    totals = {}
+    counts = {}
+    for row in data:
+        try:
+            crop = row['Crop']
+            region = row['Region']
+            soil = row['Soil_Type']
+            value = float(row['Yield_tons_per_hectare'])
+        except Exception:
+            continue
+        key = (crop, region, soil)
+        if key not in totals:
+            totals[key] = 0.0
+            counts[key] = 0
+        totals[key] += value
+        counts[key] += 1
+    averages = {}
+    for key in totals:
+        averages[key] = totals[key] / counts[key]
+    return averages
+
+
 def calc_average_rainfall_per_region(data):
     totals = {}
     counts = {}
