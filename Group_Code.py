@@ -120,6 +120,28 @@ def calc_most_frequent_weather_condition_per_region(data):
         if most is not None:
             results[key] = most
     return results
+def calc_average_days_to_harvest_per_region(data):
+    totals = {}
+    counts = {}
+    for row in data:
+        try:
+            region = row['Region']
+            soil = row['Soil_Type']
+            crop = row['Crop']
+            value = float(row['Days_to_Harvest'])
+        except Exception:
+            continue
+        key = (region, soil, crop)
+        if key not in totals:
+            totals[key] = 0.0
+            counts[key] = 0
+        totals[key] += value
+        counts[key] += 1
+    averages = {}
+    for key in totals:
+        averages[key] = totals[key] / counts[key]
+    return averages
+
 
 
 
