@@ -55,6 +55,26 @@ def calc_average_rainfall_per_region(data):
         averages[key] = totals[key] / counts[key]
     return averages
 
+def calc_highest_yield_crop_per_region(data):
+    best = {}
+    for row in data:
+        try:
+            region = row['Region']
+            soil = row['Soil_Type']
+            weather = row['Weather_Condition']
+            crop = row['Crop']
+            value = float(row['Yield_tons_per_hectare'])
+        except Exception:
+            continue
+        key = (region, soil, weather)
+        if key not in best or value > best[key][1]:
+            best[key] = (crop, value)
+    results = {}
+    for key in best:
+        results[key] = best[key][0]
+    return results
+
+
 def write_results_to_csv(results, out_path='results.csv'):
     with open(out_path, 'w', newline='', encoding='utf-8') as f:
         w = csv.writer(f)
