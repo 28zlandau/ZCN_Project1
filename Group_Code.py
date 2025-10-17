@@ -91,7 +91,36 @@ def calc_average_temp_per_region(data):
     averages = {}
     for key in totals:
         averages[key] = totals[key] / counts[key]
-    return averages
+    return averages 
+ 
+
+def calc_most_frequent_weather_condition_per_region(data):
+    all_counts = {}
+    for row in data:
+        region = row.get('Region', '')
+        soil = row.get('Soil_Type', '')
+        crop = row.get('Crop', '')
+        weather = row.get('Weather_Condition', '')
+        if not region or not soil or not crop or not weather:
+            continue
+        key = (region, soil, crop)
+        if key not in all_counts:
+            all_counts[key] = {}
+        if weather not in all_counts[key]:
+            all_counts[key][weather] = 0
+        all_counts[key][weather] += 1
+    results = {}
+    for key in all_counts:
+        most = None
+        most_num = -1
+        for condition, count in all_counts[key].items():
+            if count > most_num:
+                most = condition
+                most_num = count
+        if most is not None:
+            results[key] = most
+    return results
+
 
 
 
