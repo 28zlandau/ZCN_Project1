@@ -1,4 +1,16 @@
 # Zachary Landau, Chloe Lee & Norah Smith
+# zlandau@umich.edu, leechloe@umich.edu, norahs@umich.edu
+# 9058 8182, 1488 4654, 1084 9048
+# AI USE: We used GenAI to help with the function write_results_to_csv (line 152)
+# as we had trouble formatting the csv file output.
+# We also used GenAI to come up with ideas to use for our function calculations,
+# information used in test cases for examples, and general debugging throughout
+# the process.
+# Uploaded our file with the rubric to ChatGPT to ensure we met the project
+# requirements, and realized we had not added edge test cases.
+# Functions Created: calc_average_yield_per_crop, calc_average_rainfall_per_region,
+# calc_highest_yield_crop_per_region, calc_average_temp_per_region,
+# calc_most_frequent_weather_condition_per_region, calc_average_days_to_harvest_per_region
 
 import csv
 import unittest
@@ -304,6 +316,17 @@ class TestCropFunctions(unittest.TestCase):
 
 ##EDGE CASES
 
+    def test_avg_yield_single_region_soil(self):
+        data = [r for r in self.data if r['Region'] == 'North' and r['Soil_Type'] == 'Clay']
+        out = calc_average_yield_per_crop(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, float) for v in out.values()))
+    def test_avg_yield_one_key_subset(self):
+        first = self.data[0]
+        trip = (first['Crop'], first['Region'], first['Soil_Type'])
+        subset = [r for r in self.data if (r['Crop'], r['Region'], r['Soil_Type']) == trip]
+        out = calc_average_yield_per_crop(subset)
+        self.assertEqual(len(out), 1)
 
     def test_avg_temp_single_region(self):
         data = [r for r in self.data if r['Region'] == 'South']
@@ -356,7 +379,7 @@ class TestCropFunctions(unittest.TestCase):
         out = calc_average_days_to_harvest_per_region(subset)
         self.assertEqual(len(out), 1)
 
-   
+
 
     def test_main_is_dict(self):
         result = main()
