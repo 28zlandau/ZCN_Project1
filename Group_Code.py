@@ -285,11 +285,21 @@ class TestCropFunctions(unittest.TestCase):
         v = next(iter(out.values()))
         self.assertIsInstance(v, str)
 
-
-
-        
-
-     
+    def test_avg_days_is_dict(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_days_nonempty(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_days_key_is_triplet(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_days_value_is_float(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
 
     def test_main_is_dict(self):
         result = main()
@@ -318,10 +328,6 @@ class TestCropFunctions(unittest.TestCase):
         self.assertGreaterEqual(len(result["weather"]), 1)
         self.assertGreaterEqual(len(result["average_rain"]), 1)
         self.assertGreaterEqual(len(result["average_days_to_harvest"]), 1)
-
-
-
-  
 
 
 if __name__ == "__main__":
