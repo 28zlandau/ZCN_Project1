@@ -201,6 +201,23 @@ class TestCropFunctions(unittest.TestCase):
         out = calc_highest_yield_crop_per_region(self.data)
         v = next(iter(out.values()))
         self.assertIsInstance(v, str)
+    
+    def test_avg_temp_is_dict(self):
+        out = calc_average_temp_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_temp_nonempty(self):
+        out = calc_average_temp_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_temp_key_is_triplet(self):
+        out = calc_average_temp_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_temp_value_is_float(self):
+        out = calc_average_temp_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
+
 
 
         
