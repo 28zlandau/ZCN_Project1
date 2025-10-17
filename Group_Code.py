@@ -366,6 +366,8 @@ class TestCropFunctions(unittest.TestCase):
         out = calc_most_frequent_weather_condition_per_region(subset)
         self.assertIn(trip, out)
  
+
+ 
  
     def test_avg_days_single_region_soil(self):
         data = [r for r in self.data if r['Region'] == 'East' and r['Soil_Type'] == 'Sandy']
@@ -378,6 +380,19 @@ class TestCropFunctions(unittest.TestCase):
         subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Crop']) == trip]
         out = calc_average_days_to_harvest_per_region(subset)
         self.assertEqual(len(out), 1)
+
+    def test_avg_rain_single_region_soil(self):
+        data = [r for r in self.data if r['Region'] == 'East' and r['Soil_Type'] == 'Loam']
+        out = calc_average_rainfall_per_region(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, float) for v in out.values()))
+    def test_avg_rain_one_key_subset(self):
+        first = self.data[0]
+        trip = (first['Region'], first['Soil_Type'], first['Irrigation_Used'])
+        subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Irrigation_Used']) == trip]
+        out = calc_average_rainfall_per_region(subset)
+        self.assertEqual(len(out), 1)
+
 
 
 
