@@ -113,6 +113,23 @@ class TestCropFunctions(unittest.TestCase):
         self.assertIn("Soil_Type", row)
         self.assertIn("Yield_tons_per_hectare", row)
 
+    def test_avg_yield_is_dict(self):
+        out = calc_average_yield_per_crop(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_yield_nonempty(self):
+        out = calc_average_yield_per_crop(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_yield_key_is_triplet(self):
+        out = calc_average_yield_per_crop(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_yield_value_is_float(self):
+        out = calc_average_yield_per_crop(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
+
+
     def test_avg_rain_is_dict(self):
         out = calc_average_rainfall_per_region(self.data)
         self.assertIsInstance(out, dict)
