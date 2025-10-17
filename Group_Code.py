@@ -8,9 +8,9 @@
 # the process.
 # Uploaded our file with the rubric to ChatGPT to ensure we met the project
 # requirements, and realized we had not added edge test cases.
-# Functions Created: calc_average_yield_per_crop, calc_average_rainfall_per_region,
-# calc_highest_yield_crop_per_region, calc_average_temp_per_region,
-# calc_most_frequent_weather_condition_per_region, calc_average_days_to_harvest_per_region
+# Functions Created: Zachary:calc_average_yield_per_crop & calc_average_rainfall_per_region
+# Norah: calc_highest_yield_crop_per_region & calc_average_temp_per_region
+# Chloe:calc_most_frequent_weather_condition_per_region & calc_average_days_to_harvest_per_region
 
 import csv
 import unittest
