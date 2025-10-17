@@ -302,6 +302,62 @@ class TestCropFunctions(unittest.TestCase):
         v = next(iter(out.values()))
         self.assertIsInstance(v, float)
 
+##EDGE CASES
+
+
+    def test_avg_temp_single_region(self):
+        data = [r for r in self.data if r['Region'] == 'South']
+        out = calc_average_temp_per_region(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, float) for v in out.values()))
+    def test_avg_temp_one_key_subset(self):
+        first = self.data[0]
+        trip = (first['Region'], first['Crop'], first['Soil_Type'])
+        subset = [r for r in self.data if (r['Region'], r['Crop'], r['Soil_Type']) == trip]
+        out = calc_average_temp_per_region(subset)
+        self.assertEqual(len(out), 1)
+
+    def test_highest_yield_single_region_soil(self):
+        data = [r for r in self.data if r['Region'] == 'West' and r['Soil_Type'] == 'Clay']
+        out = calc_highest_yield_crop_per_region(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, str) for v in out.values()))
+    def test_highest_yield_key_present(self):
+        first = self.data[0]
+        trip = (first['Region'], first['Soil_Type'], first['Weather_Condition'])
+        subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Weather_Condition']) == trip]
+        out = calc_highest_yield_crop_per_region(subset)
+        self.assertIn(trip, out)
+
+
+
+    def test_weather_single_region(self):
+        data = [r for r in self.data if r['Region'] == 'North']
+        out = calc_most_frequent_weather_condition_per_region(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, str) for v in out.values()))
+    def test_weather_one_key_subset(self):
+        first = self.data[0]
+        trip = (first['Region'], first['Soil_Type'], first['Crop'])
+        subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Crop']) == trip]
+        out = calc_most_frequent_weather_condition_per_region(subset)
+        self.assertIn(trip, out)
+ 
+ 
+    def test_avg_days_single_region_soil(self):
+        data = [r for r in self.data if r['Region'] == 'East' and r['Soil_Type'] == 'Sandy']
+        out = calc_average_days_to_harvest_per_region(data)
+        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
+        self.assertTrue(all(isinstance(v, float) for v in out.values()))
+    def test_avg_days_one_key_subset(self):
+        first = self.data[0]
+        trip = (first['Region'], first['Soil_Type'], first['Crop'])
+        subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Crop']) == trip]
+        out = calc_average_days_to_harvest_per_region(subset)
+        self.assertEqual(len(out), 1)
+
+   
+
     def test_main_is_dict(self):
         result = main()
         self.assertIsInstance(result, dict)
@@ -329,28 +385,6 @@ class TestCropFunctions(unittest.TestCase):
         self.assertGreaterEqual(len(result["weather"]), 1)
         self.assertGreaterEqual(len(result["average_rain"]), 1)
         self.assertGreaterEqual(len(result["average_days_to_harvest"]), 1)
-    def test_highest_yield_single_region_soil(self):
-        data = [r for r in self.data if r['Region'] == 'West' and r['Soil_Type'] == 'Clay']
-        out = calc_highest_yield_crop_per_region(data)
-        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
-        self.assertTrue(all(isinstance(v, str) for v in out.values()))
-    def test_highest_yield_key_present(self):
-        first = self.data[0]
-        trip = (first['Region'], first['Soil_Type'], first['Weather_Condition'])
-        subset = [r for r in self.data if (r['Region'], r['Soil_Type'], r['Weather_Condition']) == trip]
-        out = calc_highest_yield_crop_per_region(subset)
-        self.assertIn(trip, out)
-    def test_avg_temp_single_region(self):
-        data = [r for r in self.data if r['Region'] == 'South']
-        out = calc_average_temp_per_region(data)
-        self.assertTrue(all(isinstance(k, tuple) and len(k) == 3 for k in out.keys()))
-        self.assertTrue(all(isinstance(v, float) for v in out.values()))
-    def test_avg_temp_one_key_subset(self):
-        first = self.data[0]
-        trip = (first['Region'], first['Crop'], first['Soil_Type'])
-        subset = [r for r in self.data if (r['Region'], r['Crop'], r['Soil_Type']) == trip]
-        out = calc_average_temp_per_region(subset)
-        self.assertEqual(len(out), 1)
 
 if __name__ == "__main__":
     unittest.main()
