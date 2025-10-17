@@ -31,8 +31,6 @@ def calc_average_yield_per_crop(data):
     for key in totals:
         averages[key] = totals[key] / counts[key]
     return averages
-
-
 def calc_average_rainfall_per_region(data):
     totals = {}
     counts = {}
@@ -73,6 +71,28 @@ def calc_highest_yield_crop_per_region(data):
     for key in best:
         results[key] = best[key][0]
     return results
+def calc_average_temp_per_region(data):
+    totals = {}
+    counts = {}
+    for row in data:
+        try:
+            region = row['Region']
+            crop = row['Crop']
+            soil = row['Soil_Type']
+            value = float(row['Temperature_Celsius'])
+        except Exception:
+            continue
+        key = (region, crop, soil)
+        if key not in totals:
+            totals[key] = 0.0
+            counts[key] = 0
+        totals[key] += value
+        counts[key] += 1
+    averages = {}
+    for key in totals:
+        averages[key] = totals[key] / counts[key]
+    return averages
+
 
 
 def write_results_to_csv(results, out_path='results.csv'):
