@@ -31,8 +31,6 @@ def calc_average_yield_per_crop(data):
     for key in totals:
         averages[key] = totals[key] / counts[key]
     return averages
-
-
 def calc_average_rainfall_per_region(data):
     totals = {}
     counts = {}
@@ -54,6 +52,99 @@ def calc_average_rainfall_per_region(data):
     for key in totals:
         averages[key] = totals[key] / counts[key]
     return averages
+
+def calc_highest_yield_crop_per_region(data):
+    best = {}
+    for row in data:
+        try:
+            region = row['Region']
+            soil = row['Soil_Type']
+            weather = row['Weather_Condition']
+            crop = row['Crop']
+            value = float(row['Yield_tons_per_hectare'])
+        except Exception:
+            continue
+        key = (region, soil, weather)
+        if key not in best or value > best[key][1]:
+            best[key] = (crop, value)
+    results = {}
+    for key in best:
+        results[key] = best[key][0]
+    return results
+def calc_average_temp_per_region(data):
+    totals = {}
+    counts = {}
+    for row in data:
+        try:
+            region = row['Region']
+            crop = row['Crop']
+            soil = row['Soil_Type']
+            value = float(row['Temperature_Celsius'])
+        except Exception:
+            continue
+        key = (region, crop, soil)
+        if key not in totals:
+            totals[key] = 0.0
+            counts[key] = 0
+        totals[key] += value
+        counts[key] += 1
+    averages = {}
+    for key in totals:
+        averages[key] = totals[key] / counts[key]
+    return averages 
+ 
+
+def calc_most_frequent_weather_condition_per_region(data):
+    all_counts = {}
+    for row in data:
+        region = row.get('Region', '')
+        soil = row.get('Soil_Type', '')
+        crop = row.get('Crop', '')
+        weather = row.get('Weather_Condition', '')
+        if not region or not soil or not crop or not weather:
+            continue
+        key = (region, soil, crop)
+        if key not in all_counts:
+            all_counts[key] = {}
+        if weather not in all_counts[key]:
+            all_counts[key][weather] = 0
+        all_counts[key][weather] += 1
+    results = {}
+    for key in all_counts:
+        most = None
+        most_num = -1
+        for condition, count in all_counts[key].items():
+            if count > most_num:
+                most = condition
+                most_num = count
+        if most is not None:
+            results[key] = most
+    return results
+def calc_average_days_to_harvest_per_region(data):
+    totals = {}
+    counts = {}
+    for row in data:
+        try:
+            region = row['Region']
+            soil = row['Soil_Type']
+            crop = row['Crop']
+            value = float(row['Days_to_Harvest'])
+        except Exception:
+            continue
+        key = (region, soil, crop)
+        if key not in totals:
+            totals[key] = 0.0
+            counts[key] = 0
+        totals[key] += value
+        counts[key] += 1
+    averages = {}
+    for key in totals:
+        averages[key] = totals[key] / counts[key]
+    return averages
+
+
+
+
 
 def write_results_to_csv(results, out_path='results.csv'):
     with open(out_path, 'w', newline='', encoding='utf-8') as f:
@@ -146,11 +237,69 @@ class TestCropFunctions(unittest.TestCase):
         v = next(iter(out.values()))
         self.assertIsInstance(v, float)
 
+    def test_highest_yield_is_dict(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_highest_yield_nonempty(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_highest_yield_key_is_triplet(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_highest_yield_value_is_str(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, str)
+    
+    def test_avg_temp_is_dict(self):
+        out = calc_average_temp_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_temp_nonempty(self):
+        out = calc_average_temp_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_temp_key_is_triplet(self):
+        out = calc_average_temp_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_temp_value_is_float(self):
+        out = calc_average_temp_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
 
+    def test_weather_is_dict(self):
+        out = calc_most_frequent_weather_condition_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_weather_nonempty(self):
+        out = calc_most_frequent_weather_condition_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_weather_key_is_triplet(self):
+        out = calc_most_frequent_weather_condition_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_weather_value_is_str(self):
+        out = calc_most_frequent_weather_condition_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, str)
 
-        
-
-     
+    def test_avg_days_is_dict(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_avg_days_nonempty(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_avg_days_key_is_triplet(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_avg_days_value_is_float(self):
+        out = calc_average_days_to_harvest_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, float)
 
     def test_main_is_dict(self):
         result = main()
@@ -179,10 +328,6 @@ class TestCropFunctions(unittest.TestCase):
         self.assertGreaterEqual(len(result["weather"]), 1)
         self.assertGreaterEqual(len(result["average_rain"]), 1)
         self.assertGreaterEqual(len(result["average_days_to_harvest"]), 1)
-
-
-
-  
 
 
 if __name__ == "__main__":
