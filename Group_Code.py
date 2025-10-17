@@ -166,6 +166,21 @@ class TestCropFunctions(unittest.TestCase):
         v = next(iter(out.values()))
         self.assertIsInstance(v, float)
 
+    def test_highest_yield_is_dict(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        self.assertIsInstance(out, dict)
+    def test_highest_yield_nonempty(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        self.assertGreaterEqual(len(out), 1)
+    def test_highest_yield_key_is_triplet(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        k = next(iter(out))
+        self.assertIsInstance(k, tuple)
+        self.assertEqual(len(k), 3)
+    def test_highest_yield_value_is_str(self):
+        out = calc_highest_yield_crop_per_region(self.data)
+        v = next(iter(out.values()))
+        self.assertIsInstance(v, str)
 
 
         
